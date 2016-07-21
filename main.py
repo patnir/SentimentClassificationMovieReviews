@@ -19,10 +19,12 @@ Created on Thu Jul 21 17:39:09 2016
 #print d
 
 import operator
+import os
 
-def loadData():
-    words = dict()
-    fhand = open("mix20_rand700_tokens_cleaned//tokens//pos//cv000_tok-11609.txt")
+words = dict()
+
+def loadData(filename):
+    fhand = open(filename)
     i = 0
     for line in fhand:
         line = line.split(" ")
@@ -31,8 +33,18 @@ def loadData():
                 words[i] += 1
             else:
                 words[i] = 1
-    print len(words)
     # sorted_x = sorted(words.items(), key=operator.itemgetter(0))
 
-        
-loadData()
+def goThroughDir(dirname):
+    print os.listdir(os.getcwd())
+    for i in os.listdir(dirname):
+        if i.endswith(".txt"): 
+            loadData("{}/{}".format(dirname, i))    
+
+goThroughDir("mix20_rand700_tokens_cleaned/tokens/neg")
+goThroughDir("mix20_rand700_tokens_cleaned/tokens/pos")
+
+
+print words
+
+print len(words)
