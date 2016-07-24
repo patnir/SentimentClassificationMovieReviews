@@ -20,6 +20,7 @@ Created on Thu Jul 21 17:39:09 2016
 
 import operator
 import os
+import re
 
 words = dict()
 
@@ -29,10 +30,13 @@ def loadData(filename):
     for line in fhand:
         line = line.split(" ")
         for i in line:
-            if i in words:
-                words[i] += 1
-            else:
-                words[i] = 1
+            x = re.findall('[a-zA-Z!]+', i)
+            if x != []:
+                i = str(i)
+                if i in words:
+                    words[i] += 1
+                else:
+                    words[i] = 1
     # sorted_x = sorted(words.items(), key=operator.itemgetter(0))
 
 def goThroughDir(dirname):
@@ -41,10 +45,24 @@ def goThroughDir(dirname):
         if i.endswith(".txt"): 
             loadData("{}/{}".format(dirname, i))    
 
-goThroughDir("mix20_rand700_tokens_cleaned/tokens/neg")
-goThroughDir("mix20_rand700_tokens_cleaned/tokens/pos")
+#goThroughDir("mix20_rand700_tokens_cleaned/tokens/neg")
+#goThroughDir("mix20_rand700_tokens_cleaned/tokens/pos")
 
+goThroughDir("sample")
 
-print words
+x = list(words.items())
+print x
 
 print len(words)
+print len(x)
+
+wordsList = []
+occurences = []
+
+for i in x:
+    wordsList.append(i[0])
+    occurences.append(i[1])
+    
+print wordsList
+print occurences
+
