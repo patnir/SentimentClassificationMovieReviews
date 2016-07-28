@@ -49,14 +49,39 @@ def determinePresence(filename, words):
 
 def setFeatures(X, words, dirname, Y):
     for i in os.listdir(dirname):
-        if "posSmall" in dirname:
+        if "pos" in dirname:
             Y.append(1)
         else:
             Y.append(0)
         if i.endswith(".txt"):
             print i
             X.append(determinePresence("{}/{}".format(dirname, i), words))
-
+            
+  
+def determineValidationPresence(filename, words):
+    fptr = open(filename)
+    X = numpy.zeros(len(words) + 1)
+    j = 0
+    for line in fptr:
+        line = line.split(" ")
+        for i in line:
+            i = i.rstrip()
+            if i in words:
+                X[j] = 1
+            j += 1
+    return X
+          
+def setValidationFeatures(X, words, dirname, Y):
+    for i in os.listdir(dirname):
+        if "pos" in dirname:
+            Y.append(1)
+        else:
+            Y.append(0)
+        if i.endswith(".txt"):
+            print i
+            X.append(determineValidationPresence("{}/{}".format(dirname, i), words))
+            
+    
 def initializeWeights(words):
     weights = numpy.zeros(len(words) + 1)
     # the original weight vector, with Threshold added
@@ -69,19 +94,41 @@ def threshold(weights, X):
     # 0 if it indicates a negative review
     T = weights[len(X) - 1]
     result = numpy.dot(weights, numpy.transpose(X))
-    if (result > T):
+    if result >= T:
         return 1
     return 0
     
-def training(X, words, weights, Y):
+def training(X, words, weights, Y, k):
+    for j in range(k):
+        for i in range(len(X)):
+            result = threshold(weights, X[i]) 
+            if result != Y[i]:
+                if result == 1:
+                    weights = numpy.subtract(weights, X[i])
+                else: 
+                    weights = numpy.add(weights, X[i])
+
+def testing(words, weights):
+    X = []
+    Y = []
+    setValidationFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/pos/validation", Y)
+    setValidationFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/neg/validation", Y)
+    new_weights = []
+    T = weights[len(X) - 1]
+    [new_weights.append(weights[i]) for i in range(len(weights) - 1)]
+    totalCorrect = 0.0
     for i in range(len(X)):
-        result = threshold(weights, X[i]) 
-        if result != Y[i]:
-            if result == 1:
-                weights = numpy.subtract(weights, X[i])
-            else: 
-                weights = numpy.add(weights, X[i])
-    printArray(weights)
+        result = numpy.dot(new_weights, numpy.transpose(X[i]))
+        if result >= T:
+            result = 1
+        else:
+            result = 0
+        if result == Y[i]:
+            totalCorrect += 1.0
+    print "Percentage correct is"
+    print (float(totalCorrect) / float(len(Y))) * 100
+                
+    return
     
 def main():
     words = []
@@ -89,13 +136,19 @@ def main():
     #weights = initializeWeights(words)
     X = []
     Y = []
-    setFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/training/posSmall", Y)
-    setFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/training/negSmall", Y)
+#    setFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/training/posSmall", Y)
+#    setFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/training/negSmall", Y)
+    setFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/pos", Y)
+    setFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/neg", Y)
     print len(X)
     print len(X[0])
     weights = initializeWeights(words)
     print len(weights)
-    training(X, words, weights, Y)
+    # number of repetitions
+    k = 100
+    training(X, words, weights, Y, k)
+    testing(words, weights)
+    
     
 if __name__ == "__main__":
     main()
