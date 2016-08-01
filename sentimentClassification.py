@@ -50,6 +50,9 @@ def determinePresence(filename, words):
     return X
 
 def setFeatures(X, words, dirname, Y):
+    printArray(os.listdir(dirname))
+    print "asdf"
+    print len(os.listdir(dirname))
     for i in os.listdir(dirname):
         if "pos" in dirname:
             Y.append(1)
