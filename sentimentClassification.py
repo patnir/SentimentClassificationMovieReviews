@@ -51,15 +51,12 @@ def determinePresence(filename, words):
 
 def setFeatures(X, words, dirname, Y):
     printArray(os.listdir(dirname))
-    print "asdf"
-    print len(os.listdir(dirname))
     for i in os.listdir(dirname):
         if "pos" in dirname:
             Y.append(1)
         else:
             Y.append(0)
         if i.endswith(".txt"):
-            print i
             X.append(determinePresence("{}/{}".format(dirname, i), words))
             
   
@@ -83,7 +80,6 @@ def setValidationFeatures(X, words, dirname, Y):
         else:
             Y.append(0)
         if i.endswith(".txt"):
-            print i
             X.append(determineValidationPresence("{}/{}".format(dirname, i), words))
             
     
@@ -113,6 +109,7 @@ def training(X, words, weights, Y, k):
                 else: 
                     weights = numpy.add(weights, X[i])
                 print weights
+    return weights
 
 def testing(words, weights):
     X = []
@@ -142,7 +139,6 @@ def testing(words, weights):
 def main():
     words = []
     loadData(words) 
-    #weights = initializeWeights(words)
     X = []
     Y = []
     setFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/training/negSmall", Y)
@@ -151,8 +147,8 @@ def main():
 #    setFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/neg", Y)
     weights = initializeWeights(words)
     # number of repetitions
-    k = 10
-    training(X, words, weights, Y, k)
+    k = 100
+    weights = training(X, words, weights, Y, k)
     testing(words, weights)
     
     

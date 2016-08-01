@@ -39,11 +39,13 @@ def printArray(array):
     for i in array:
         print i
 
-def setFeatures(words, X, Y, dirNeg, dirPos, negExamples, posExamples):
+def setFeatures(words, X, Y, dirNeg, dirPos):
     i = 0 # Negative tracker
     j = 0
     negFiles = os.listdir(dirNeg) #Negative Files
     posFiles = os.listdir(dirPos)
+    posExamples = len(posFiles)
+    negExamples = len(negFiles)
     for k in range(posExamples + negExamples):
         check = random.randint(0, 1)
         print check
@@ -60,19 +62,50 @@ def setFeatures(words, X, Y, dirNeg, dirPos, negExamples, posExamples):
             
     return
 
+def initializeWeights(words):
+    weights = numpy.zeros(len(words) + 1)
+    # the original weight vector, with Threshold added
+    weights[len(words)] = 0
+    return weights
+
+def threshold(weights, X):
+    T = weights[len(weights) - 1]
+    result = numpy.dot(weights, numpy.transpose(X))
+    if result >= T:
+        return 1
+    return 0
+
+def settingWeights(X, words, weights, Y, k):
+    for j in range(k):
+        for i in range(len(X)):
+            result = threshold(weights, X[i]) 
+            if result != Y[i]:
+                if result == 1:
+                    weights = numpy.subtract(weights, X[i])
+                else: 
+                    weights = numpy.add(weights, X[i])
+                print weights
+    return weights
+
 def training(words, X, Y):
     dirNeg = "mix20_rand700_tokens_cleaned/tokens/training/negSmall"
     dirPos = "mix20_rand700_tokens_cleaned/tokens/training/posSmall" 
-    posExamples = 20
-    negExamples = 20
-    setFeatures(words, X, Y, dirNeg, dirPos, negExamples, posExamples)
+    setFeatures(words, X, Y, dirNeg, dirPos)
+    weights = initializeWeights(words)
+    k = 50
+    weights = settingWeights(X, words, weights, Y, k)
+    new_weights = []
+    [new_weights.append(x) for x in range(len(weights) - 1)]
+    print weights[0]
+    return new_weights, T
 
 def main():
     words = []
     X = []
     Y = []
     loadWords(words)
-    training(words, X, Y)    
+    weights, T = training(words, X, Y)
+    print T
     
     
 if __name__ == "__main__":
