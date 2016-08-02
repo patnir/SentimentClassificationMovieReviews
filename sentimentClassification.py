@@ -50,13 +50,13 @@ def determinePresence(filename, words):
     return X
 
 def setFeatures(X, words, dirname, Y):
-    printArray(os.listdir(dirname))
     for i in os.listdir(dirname):
         if "pos" in dirname:
             Y.append(1)
         else:
             Y.append(0)
         if i.endswith(".txt"):
+            print i
             X.append(determinePresence("{}/{}".format(dirname, i), words))
             
   
@@ -80,6 +80,7 @@ def setValidationFeatures(X, words, dirname, Y):
         else:
             Y.append(0)
         if i.endswith(".txt"):
+            print i
             X.append(determineValidationPresence("{}/{}".format(dirname, i), words))
             
     
@@ -114,10 +115,10 @@ def training(X, words, weights, Y, k):
 def testing(words, weights):
     X = []
     Y = []
-    setValidationFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/training/validationNegSmall", Y)
-    setValidationFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/training/validationPosSmall", Y)
-#    setValidationFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/pos/validation", Y)
-#    setValidationFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/neg/validation", Y)
+#    setValidationFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/training/validationNegSmall", Y)
+#    setValidationFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/training/validationPosSmall", Y)
+    setValidationFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/pos/validation", Y)
+    setValidationFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/neg/validation", Y)
     new_weights = []
     T = weights[len(X) - 1]
     [new_weights.append(weights[i]) for i in range(len(weights) - 1)]
@@ -141,10 +142,10 @@ def main():
     loadData(words) 
     X = []
     Y = []
-    setFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/training/negSmall", Y)
-    setFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/training/posSmall", Y)
-#    setFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/pos", Y)
-#    setFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/neg", Y)
+#    setFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/training/negSmall", Y)
+#    setFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/training/posSmall", Y)
+    setFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/pos", Y)
+    setFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/neg", Y)
     weights = initializeWeights(words)
     # number of repetitions
     k = 100

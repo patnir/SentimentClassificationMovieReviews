@@ -36,8 +36,8 @@ def determinePresence(filename, words):
     return X
 
 def printArray(array):
-    for i in array:
-        print i
+    for i in range(int(len(array) / 10)):
+        print array[i]
 
 def setFeatures(words, X, Y, dirNeg, dirPos):
     i = 0 # Negative tracker
@@ -48,14 +48,15 @@ def setFeatures(words, X, Y, dirNeg, dirPos):
     negExamples = len(negFiles)
     for k in range(posExamples + negExamples):
         check = random.randint(0, 1)
-        print check
         # Negative examples
         if (check == 0 or j >= posExamples) and (i < negExamples):
+            print "trianing from", negFiles[i]
             X.append(determinePresence("{}/{}".format(dirNeg, negFiles[i]), words))
             i += 1
             Y.append(0)
         # Positive examples
         else: 
+            print "trianing from", posFiles[j]
             X.append(determinePresence("{}/{}".format(dirPos, posFiles[j]), words))
             j += 1
             Y.append(1)
@@ -88,16 +89,68 @@ def settingWeights(X, words, weights, Y, k):
     return weights
 
 def training(words, X, Y):
-    dirNeg = "mix20_rand700_tokens_cleaned/tokens/training/negSmall"
-    dirPos = "mix20_rand700_tokens_cleaned/tokens/training/posSmall" 
+    dirNeg = "mix20_rand700_tokens_cleaned/tokens/neg/testing"
+    dirPos = "mix20_rand700_tokens_cleaned/tokens/pos/testing" 
     setFeatures(words, X, Y, dirNeg, dirPos)
     weights = initializeWeights(words)
     k = 50
     weights = settingWeights(X, words, weights, Y, k)
     new_weights = []
-    [new_weights.append(x) for x in range(len(weights) - 1)]
-    print weights[0]
+    [new_weights.append(weights[x]) for x in range(len(weights) - 1)]
+    T = weights[len(weights) - 1]
     return new_weights, T
+
+def determineTestingPresense(filename, words):
+    fptr = open(filename)
+    X = numpy.zeros(len(words))
+    j = 0
+    for line in fptr:
+        line = line.split(" ")
+        for i in line:
+            i = i.rstrip()
+            if i in words:
+                X[j] = 1
+            j += 1
+    fptr.close()
+    return X
+
+def setTestingFeatures(words, X, Y, dirNeg, dirPos):
+    negFiles = os.listdir(dirNeg) #Negative Files
+    posFiles = os.listdir(dirPos)
+    for i in negFiles:
+        print "testing from negative", i
+        X.append(determineTestingPresense("{}/{}".format(dirNeg, i), words))
+        Y.append(0)
+    for i in posFiles:
+        print "testing from positive", i
+        X.append(determineTestingPresense("{}/{}".format(dirPos, i), words))
+        Y.append(1)
+
+def accuracyCheck(weights, T, X, Y):
+    totalCorrect = 0.0
+    for i in range(len(X)):
+        result = numpy.dot(weights, numpy.transpose(X[i]))
+        if result >= T:
+            result = 1
+        else:
+            result = 0
+        print i, "result", result
+        if result == Y[i]:
+            totalCorrect += 1.0
+    print "Percentage correct is"
+    print (float(totalCorrect) / float(len(Y))) * 100
+    return
+
+def testing(words, weigths, T):
+    X = []
+    Y = []
+    #dirNeg = "mix20_rand700_tokens_cleaned/tokens/training/validationNegSmall"
+    #dirPos = "mix20_rand700_tokens_cleaned/tokens/training/validationPosSmall"
+    dirNeg = "mix20_rand700_tokens_cleaned\tokens\neg\training"
+    dirPos = "mix20_rand700_tokens_cleaned\tokens\pos\training"
+    setTestingFeatures(words, X, Y, dirNeg, dirPos)
+    accuracyCheck(weigths, T, X, Y)
+    return
 
 def main():
     words = []
@@ -105,8 +158,8 @@ def main():
     Y = []
     loadWords(words)
     weights, T = training(words, X, Y)
-    print T
-    
+    testing(words, weights, T)
+    print "end"
     
 if __name__ == "__main__":
     main()
