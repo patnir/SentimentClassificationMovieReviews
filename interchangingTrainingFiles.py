@@ -11,7 +11,6 @@ import os
 import random
 import numpy
 
-
 def loadWords(words):
     fptr = open("words.txt")
     for line in fptr:
@@ -89,8 +88,8 @@ def settingWeights(X, words, weights, Y, k):
     return weights
 
 def training(words, X, Y):
-    dirNeg = "mix20_rand700_tokens_cleaned/tokens/neg/testing"
-    dirPos = "mix20_rand700_tokens_cleaned/tokens/pos/testing" 
+    dirNeg = "mix20_rand700_tokens_cleaned/tokens/neg/training"
+    dirPos = "mix20_rand700_tokens_cleaned/tokens/pos/training" 
     setFeatures(words, X, Y, dirNeg, dirPos)
     weights = initializeWeights(words)
     k = 50
@@ -146,8 +145,8 @@ def testing(words, weigths, T):
     Y = []
     #dirNeg = "mix20_rand700_tokens_cleaned/tokens/training/validationNegSmall"
     #dirPos = "mix20_rand700_tokens_cleaned/tokens/training/validationPosSmall"
-    dirNeg = "mix20_rand700_tokens_cleaned\tokens\neg\training"
-    dirPos = "mix20_rand700_tokens_cleaned\tokens\pos\training"
+    dirNeg = "mix20_rand700_tokens_cleaned/tokens/neg/testing"
+    dirPos = "mix20_rand700_tokens_cleaned/tokens/pos/testing"
     setTestingFeatures(words, X, Y, dirNeg, dirPos)
     accuracyCheck(weigths, T, X, Y)
     return
