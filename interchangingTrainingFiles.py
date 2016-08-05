@@ -35,7 +35,7 @@ def determinePresence(filename, words):
     return X
 
 def printArray(array):
-    for i in range(int(len(array) / 10)):
+    for i in range(len(array)):
         print array[i]
 
 def setFeatures(words, X, Y, dirNeg, dirPos):
@@ -88,8 +88,8 @@ def settingWeights(X, words, weights, Y, k):
     return weights
 
 def training(words, X, Y):
-    dirNeg = "mix20_rand700_tokens_cleaned/tokens/neg/training"
-    dirPos = "mix20_rand700_tokens_cleaned/tokens/pos/training" 
+    dirNeg = "mix20_rand700_tokens_cleaned/tokens/training/negSmall"
+    dirPos = "mix20_rand700_tokens_cleaned/tokens/training/posSmall" 
     setFeatures(words, X, Y, dirNeg, dirPos)
     weights = initializeWeights(words)
     k = 200
@@ -143,12 +143,18 @@ def accuracyCheck(weights, T, X, Y):
 def testing(words, weigths, T):
     X = []
     Y = []
-    #dirNeg = "mix20_rand700_tokens_cleaned/tokens/training/validationNegSmall"
-    #dirPos = "mix20_rand700_tokens_cleaned/tokens/training/validationPosSmall"
-    dirNeg = "mix20_rand700_tokens_cleaned/tokens/neg/testing"
-    dirPos = "mix20_rand700_tokens_cleaned/tokens/pos/testing"
+    dirNeg = "mix20_rand700_tokens_cleaned/tokens/training/validationNegSmall"
+    dirPos = "mix20_rand700_tokens_cleaned/tokens/training/validationPosSmall"
+    #dirNeg = "mix20_rand700_tokens_cleaned/tokens/neg/testing"
+    #dirPos = "mix20_rand700_tokens_cleaned/tokens/pos/testing"
     setTestingFeatures(words, X, Y, dirNeg, dirPos)
     accuracyCheck(weigths, T, X, Y)
+    print "Y"
+    printArray(Y)
+    print "threshold"
+    print T
+    print "len, sum"
+    print len(Y), sum(Y)
     return
 
 def main():
