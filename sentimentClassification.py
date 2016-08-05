@@ -115,8 +115,6 @@ def training(X, words, weights, Y, k):
 def testing(words, weights):
     X = []
     Y = []
-#    setValidationFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/training/validationNegSmall", Y)
-#    setValidationFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/training/validationPosSmall", Y)
     setValidationFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/pos/validation", Y)
     setValidationFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/neg/validation", Y)
     new_weights = []
@@ -142,8 +140,6 @@ def main():
     loadData(words) 
     X = []
     Y = []
-#    setFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/training/negSmall", Y)
-#    setFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/training/posSmall", Y)
     setFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/pos", Y)
     setFeatures(X, words, "mix20_rand700_tokens_cleaned/tokens/neg", Y)
     weights = initializeWeights(words)

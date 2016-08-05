@@ -92,7 +92,7 @@ def training(words, X, Y):
     dirPos = "mix20_rand700_tokens_cleaned/tokens/pos/training" 
     setFeatures(words, X, Y, dirNeg, dirPos)
     weights = initializeWeights(words)
-    k = 50
+    k = 200
     weights = settingWeights(X, words, weights, Y, k)
     new_weights = []
     [new_weights.append(weights[x]) for x in range(len(weights) - 1)]
