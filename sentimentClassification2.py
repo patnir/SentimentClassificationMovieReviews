@@ -41,7 +41,23 @@ def determinePresence(filename, words, isTraining):
     fptr.close()
     return X
 
-def setFeatures(words, X, Y, dirneg, dirPos, isTraining):
+def setFeatures(words, X, Y, dirNeg, dirPos, isTraining):
+    negFiles = os.listdir(dirNeg)
+    posFiles = os.listdir(dirPos)
+    for i in negFiles:
+        if isTraining == True:
+                print "trianing from", i
+        else:
+            print "testing from", i
+        X.append(determinePresence("{}/{}".format(dirNeg, i), words, isTraining))
+        Y.append(0)
+    for j in posFiles:
+        if isTraining == True:
+                print "trianing from", j
+        else:
+            print "testing from", j
+        X.append(determinePresence("{}/{}".format(dirPos, j), words, isTraining))
+        Y.append(1)
     return
 
 def setFeaturesRandomly(words, X, Y, dirNeg, dirPos, isTraining):
@@ -110,15 +126,43 @@ def training(words, X, Y):
     T = weights[len(weights) - 1]
     return new_weights, T
 
+def accuracyCheck(weights, T, X, Y):
+    totalCorrect = 0.0
+    for i in range(len(X)):
+        result = numpy.dot(weights, numpy.transpose(X[i]))
+        if result >= T:
+            result = 1
+        else:
+            result = 0
+        print i, "result", result
+        if result == Y[i]:
+            totalCorrect += 1.0
+    print "Percentage correct is"
+    print (float(totalCorrect) / float(len(Y))) * 100
+    return
+
+def testing(words, weigths, T):
+    X = []
+    Y = []
+    dirNeg = "mix20_rand700_tokens_cleaned/tokens/training/validationNegSmall"
+    dirPos = "mix20_rand700_tokens_cleaned/tokens/training/validationPosSmall"
+    setFeatures(words, X, Y, dirNeg, dirPos, False)
+    accuracyCheck(weigths, T, X, Y)
+    print "Y"
+    printArray(Y)
+    print "threshold"
+    print T
+    print "len, sum"
+    print len(Y), sum(Y)
+    return
+
 def main():
     words = []
     X = []
     Y = []
     loadWords(words)
     weights, T = training(words, X, Y)
-    #testing(words, weights, T)
-    print T
-    print "end"
+    testing(words, weights, T)
     
 if __name__ == "__main__":
     main()
