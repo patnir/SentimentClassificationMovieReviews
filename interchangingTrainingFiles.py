@@ -59,7 +59,6 @@ def setFeatures(words, X, Y, dirNeg, dirPos):
             X.append(determinePresence("{}/{}".format(dirPos, posFiles[j]), words))
             j += 1
             Y.append(1)
-            
     return
 
 def initializeWeights(words):
