@@ -98,15 +98,18 @@ def threshold(weights, X):
 
 def settingWeights(X, words, weights, Y, k):
     for j in range(k):
-        for i in range(len(X)):
+        for i in range(len(X) - 1):
             result = threshold(weights, X[i]) 
             if result != Y[i]:
                 if result == 1:
                     weights = numpy.subtract(weights, X[i])
                 else: 
                     weights = numpy.add(weights, X[i])
-                print weights
-    return weights
+        new_weights = []
+        [new_weights.append(weights[x]) for x in range(len(weights) - 1)]
+        T = weights[len(weights) - 1]
+        testing(words, new_weights, T)
+    return new_weights
 
 def initializeWeights(words):
     weights = numpy.zeros(len(words) + 1)
@@ -115,11 +118,13 @@ def initializeWeights(words):
     return weights
 
 def training(words, X, Y):
-    dirNeg = "data2/tokens/neg"
-    dirPos = "data2/tokens/pos" 
-    setFeatures(words, X, Y, dirNeg, dirPos, True)
+    #dirNeg = "data2/tokens/negTraining"
+    dirNeg = "data1/tokens/training/neg"
+    #dirPos = "data2/tokens/posTraining" 
+    dirPos = "data1/tokens/training/pos"
+    setFeaturesRandomly(words, X, Y, dirNeg, dirPos, True)
     weights = initializeWeights(words)
-    k = 200
+    k = 1000
     weights = settingWeights(X, words, weights, Y, k)
     new_weights = []
     [new_weights.append(weights[x]) for x in range(len(weights) - 1)]
@@ -134,26 +139,22 @@ def accuracyCheck(weights, T, X, Y):
             result = 1
         else:
             result = 0
-        print i, "result", result
+        #print i, "result", result
         if result == Y[i]:
             totalCorrect += 1.0
-    print "Percentage correct is"
-    print (float(totalCorrect) / float(len(Y))) * 100
+    print "Accuracy:",
+    print (float(totalCorrect) / float(len(Y))) * 100, "%"
     return
 
 def testing(words, weigths, T):
     X = []
     Y = []
-    dirNeg = "mix20_rand700_tokens_cleaned/tokens/training/validationNegSmall"
-    dirPos = "mix20_rand700_tokens_cleaned/tokens/training/validationPosSmall"
+    #dirNeg = "data2/tokens/negTesting"
+    dirNeg = "data1/tokens/training/negSmall"
+    #dirPos = "data2/tokens/posTesting"
+    dirPos = "data1/tokens/training/posSmall"
     setFeatures(words, X, Y, dirNeg, dirPos, False)
     accuracyCheck(weigths, T, X, Y)
-    print "Y"
-    printArray(Y)
-    print "threshold"
-    print T
-    print "len, sum"
-    print len(Y), sum(Y)
     return
 
 def main():
