@@ -102,10 +102,8 @@ def accuracyCheck(weights, T, X, Y):
 
 def settingWeights(words, xTrain, yTrain, xTest, yTest):
     weights = initializeWeights(words)
-    k = 100
+    k = 500
     accuracies = []
-    xPlot = []
-    total = 0
     for j in range(k):
         print "for k = ", k
         for i in range(len(xTrain) - 1):
@@ -119,25 +117,28 @@ def settingWeights(words, xTrain, yTrain, xTest, yTest):
         new_weights = []
         [new_weights.append(weights[x]) for x in range(len(weights) - 1)]
         accuracies.append(accuracyCheck(new_weights, T, xTest, yTest))
-        xPlot.append(total)
-        total += 1
-    plotData(xPlot, accuracies)
+    plotData(accuracies)
     return
 
-def plotData(x, y):
+def plotData(y):
     plt.plot(y)
+    plt.ylim(0, 110)
+    plt.xlabel('Iterations')
+    plt.ylabel('Accuracy %')
+    plt.title('How accuracy varies as iterations increase')
     plt.show()
 
 def main():
     words = []
     loadWords(words)
-    dirPosTraining = "data1/tokens/training/pos"
-    dirNegTraining = "data1/tokens/training/neg"
+    #dirPosTraining = "data1/tokens/training/pos"
+    dirPosTraining = "data2/tokens/posTraining"
+    dirNegTraining = "data2/tokens/negTraining"
     xTrain = []
     yTrain = []
     setFeaturesRandomly(words, xTrain, yTrain, dirNegTraining, dirPosTraining, True)
-    dirPosTesting = "data1/tokens/training/posSmall"
-    dirNegTesting = "data1/tokens/training/negSmall"
+    dirPosTesting = "data2/tokens/posTesting"
+    dirNegTesting = "data2/tokens/negTesting"
     xTest = []
     yTest = []
     setFeaturesRandomly(words, xTest, yTest, dirNegTesting, dirPosTesting, False)
