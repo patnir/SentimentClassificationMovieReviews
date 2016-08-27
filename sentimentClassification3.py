@@ -36,7 +36,7 @@ def determinePresence(filename, words, isTraining):
         for i in line:
             i = i.rstrip()
             if i in words:
-                X[j] = 1
+                X[j] += 1
             j += 1
     # add an additional feature that is always on to x
     fptr.close()
