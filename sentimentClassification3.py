@@ -17,7 +17,7 @@ def printArray(array):
         print array[i]
 
 def loadWords(words):
-    fptr = open("words.txt")
+    fptr = open("newWords.txt")
     for line in fptr:
         words.append(str(line.rstrip()))
     fptr.close()
@@ -102,10 +102,10 @@ def accuracyCheck(weights, T, X, Y):
 
 def settingWeights(words, xTrain, yTrain, xTest, yTest):
     weights = initializeWeights(words)
-    k = 500
+    k = 200
     accuracies = []
     for j in range(k):
-        print "for k = ", k
+        print "for k = ", j
         for i in range(len(xTrain) - 1):
             result = threshold(weights, xTrain[i]) 
             if result != yTrain[i]:
