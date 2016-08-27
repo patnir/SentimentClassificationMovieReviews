@@ -51,7 +51,11 @@ def mergeSort(A, start, end):
     mergeSort(A, mid + 1, end)
     merge(A, start, mid, end)
         
-    
+def writeToFile(words):
+    fptr = open("newWords.txt", "w")
+    for i in words:
+        fptr.write("{}\n".format(i))
+    fptr.close()
     
 def main():
     #dirTest = "data2/tokens/posTraining"
@@ -62,6 +66,8 @@ def main():
     #yTrain = []
     #setFeaturesRandomly(words, xTrain, yTrain, dirNegTraining, dirPosTraining, True)
     print words
+    writeToFile(words)
+    print "completed"
     return
     
 main()
